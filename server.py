@@ -15,11 +15,14 @@ import select
 import time
 import serial
 
-DEBUG = True # Prints messages
+
+
+DEBUG = False # Prints messages
+
 HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
 PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
 BAUDRATE = 115200 # Arbitrary number
-PORT = '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0'
+SERIALPORT = '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0'
 
 q_in_ser = queue.Queue()                     # Input Queue from the Serial
 q_out_ser = queue.Queue()                    # Output Queue to the Serial
@@ -72,7 +75,8 @@ def TCP_writer():
 # Start Serial port read
 # Read from Serial port and send it to the FIFO
 
-ser = serial.Serial(PORT, 
+
+ser = serial.Serial(SERIALPORT, 
                     baudrate=BAUDRATE, bytesize=8, parity=serial.PARITY_NONE)  # open serial port
 
 # Read if the is data from the UART, if the is any add to the q_in_ser
