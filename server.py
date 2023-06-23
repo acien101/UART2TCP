@@ -17,12 +17,11 @@ import serial
 
 
 
-DEBUG = False # Prints messages
+DEBUG = True # Prints messages
 
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
+PORT = 8081  # Port to listen on (non-privileged ports are > 1023)
 BAUDRATE = 115200 # Arbitrary number
-SERIALPORT = '/dev/serial/by-id/usb-1a86_USB2.0-Serial-if00-port0'
+SERIALPORT = '/dev/ttyUSB0'
 
 q_in_ser = queue.Queue()                     # Input Queue from the Serial
 q_out_ser = queue.Queue()                    # Output Queue to the Serial
@@ -57,7 +56,7 @@ def sendTCP(conn, data):
   
   if DEBUG:
       print("Sending data to TCP")
-  conn.sendall(data)
+  conn.send(data)
 
 # If there is any data on the q_in_ser, post it on the TCP
 def TCP_writer():
@@ -86,7 +85,7 @@ def UART_listener():
     #read data from serial port
     ready = select.select([ser], [], [], check_conn_timemout)
     if ready[0]:
-      i_data = ser.readline()
+      i_data = ser.read()
   
       #if there is smth do smth
       if len(i_data) >= 1:
@@ -111,7 +110,7 @@ def UART_writer():
     q_out_ser.task_done()
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST, PORT))
+s.bind(('', PORT))
 s.listen()
 
 server_active = True
